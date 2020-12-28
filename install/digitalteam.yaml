@@ -1,0 +1,488 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teamoperator
+  name: digitalteamapp-teamoperator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digitalteamapp-teamoperator
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: digitalteamapp-teamoperator
+    spec:
+      containers:
+      - image: digitalteamapp/teamoperator
+        name: teamoperator
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teamoperator
+  name: digitalteamapp-teamoperator
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: digitalteamapp-teamoperator
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: cert-manager
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: support@digitalteam.app
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: digitalteamapp-teamoperator-letsencrypt-prod
+    # Enable the HTTP-01 challenge provider
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: digitalteamapp-teamoperator-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "digitalteamapp-teamoperator-letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+      - operator.digitalteam.local
+    secretName: digitalteamapp-teamoperator-tls
+  rules:
+  - host: operator.digitalteam.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: digitalteamapp-teamoperator
+            port:
+              number: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember1
+  name: digitalteamapp-teammember1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digitalteamapp-teammember1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: digitalteamapp-teammember1
+    spec:
+      containers:
+      - image: digitalteamapp/teammember
+        name: teammember
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember1
+  name: digitalteamapp-teammember1
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: digitalteamapp-teammember1
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: digitalteamapp-teammember1-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "digitalteamapp-teamoperator-letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+      - teammember1.digitalteam.local
+    secretName: digitalteamapp-teamoperator-tls
+  rules:
+  - host: teammember1.digitalteam.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: digitalteamapp-teammember1
+            port:
+              number: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember2
+  name: digitalteamapp-teammember2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digitalteamapp-teammember2
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: digitalteamapp-teammember2
+    spec:
+      containers:
+      - image: digitalteamapp/teammember
+        name: teammember
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember2
+  name: digitalteamapp-teammember2
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: digitalteamapp-teammember2
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: digitalteamapp-teammember2-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "digitalteamapp-teamoperator-letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+      - teammember2.digitalteam.local
+    secretName: digitalteamapp-teamoperator-tls
+  rules:
+  - host: teammember2.digitalteam.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: digitalteamapp-teammember2
+            port:
+              number: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember3
+  name: digitalteamapp-teammember3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digitalteamapp-teammember3
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: digitalteamapp-teammember3
+    spec:
+      containers:
+      - image: digitalteamapp/teammember
+        name: teammember
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember3
+  name: digitalteamapp-teammember3
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: digitalteamapp-teammember3
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: digitalteamapp-teammember3-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "digitalteamapp-teamoperator-letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+      - teammember3.digitalteam.local
+    secretName: digitalteamapp-teamoperator-tls
+  rules:
+  - host: teammember3.digitalteam.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: digitalteamapp-teammember3
+            port:
+              number: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember4
+  name: digitalteamapp-teammember4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digitalteamapp-teammember4
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: digitalteamapp-teammember4
+    spec:
+      containers:
+      - image: digitalteamapp/teammember
+        name: teammember
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember4
+  name: digitalteamapp-teammember4
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: digitalteamapp-teammember4
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: digitalteamapp-teammember4-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "digitalteamapp-teamoperator-letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+      - teammember4.digitalteam.local
+    secretName: digitalteamapp-teamoperator-tls
+  rules:
+  - host: teammember4.digitalteam.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: digitalteamapp-teammember4
+            port:
+              number: 8080
+---              
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember5
+  name: digitalteamapp-teammember5
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digitalteamapp-teammember5
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: digitalteamapp-teammember5
+    spec:
+      containers:
+      - image: digitalteamapp/teammember
+        name: teammember
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember5
+  name: digitalteamapp-teammember5
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: digitalteamapp-teammember5
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: digitalteamapp-teammember5-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "digitalteamapp-teamoperator-letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+      - teammember5.digitalteam.local
+    secretName: digitalteamapp-teamoperator-tls
+  rules:
+  - host: teammember5.digitalteam.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: digitalteamapp-teammember5
+            port:
+              number: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember6
+  name: digitalteamapp-teammember6
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digitalteamapp-teammember6
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: digitalteamapp-teammember6
+    spec:
+      containers:
+      - image: digitalteamapp/teammember
+        name: teammember
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: digitalteamapp-teammember6
+  name: digitalteamapp-teammember6
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: digitalteamapp-teammember6
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: digitalteamapp-teammember6-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "digitalteamapp-teamoperator-letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+      - teammember6.digitalteam.local
+    secretName: digitalteamapp-teamoperator-tls
+  rules:
+  - host: teammember6.digitalteam.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: digitalteamapp-teammember6
+            port:
+              number: 8080
