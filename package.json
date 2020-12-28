@@ -1,0 +1,28 @@
+{
+  "name": "teamoperator",
+  "version": "1.0.0",
+  "description": "The digital team app official team operator.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digitalteamapp/teamoperator.git"
+  },
+  "keywords": [
+    "digital",
+    "team",
+    "app",
+    "teamoperator"
+  ],
+  "author": "Gerhard Richard Edens",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/digitalteamapp/teamoperator/issues"
+  },
+  "homepage": "https://github.com/digitalteamapp/teamoperator#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
